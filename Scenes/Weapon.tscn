@@ -15,6 +15,7 @@ collision_mask = 0
 script = ExtResource("1_oko7r")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 1
 texture_filter = 1
 texture = ExtResource("2_jst76")
 
@@ -28,6 +29,7 @@ position = Vector2(-3.05025, -3.05025)
 rotation = -0.785398
 collision_layer = 1024
 collision_mask = 48
+monitoring = false
 monitorable = false
 
 [node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]

@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2b25gsn7jgl0"]
+[gd_scene load_steps=4 format=3 uid="uid://b2b25gsn7jgl0"]
 
 [ext_resource type="PackedScene" uid="uid://qeh62dx7i87e" path="res://Scenes/Player.tscn" id="1_wa3x0"]
-[ext_resource type="PackedScene" uid="uid://b1wfbryodrhr8" path="res://Scenes/Weapon.tscn" id="2_a50ox"]
 [ext_resource type="PackedScene" uid="uid://by2jnsf35dlc2" path="res://Scenes/Enemy.tscn" id="2_b8cd2"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_8vncq"]
@@ -10,7 +9,7 @@ symbol_color = Color(0.67451, 0.2, 0.803922, 1)
 function_color = Color(0.403922, 0.713726, 0.776471, 1)
 member_variable_color = Color(0.741176, 0.796078, 0, 1)
 
-[node name="Node2D" type="Node2D"]
+[node name="TestScene" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_wa3x0")]
 position = Vector2(202, 95)
@@ -27,6 +26,7 @@ grow_vertical = 2
 
 [node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/UI"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.260417
@@ -48,7 +48,3 @@ position = Vector2(310, 180)
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 zoom = Vector2(3, 3)
-
-[node name="Sword" parent="." instance=ExtResource("2_a50ox")]
-visible = false
-position = Vector2(128, 104)
