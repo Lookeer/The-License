@@ -1,0 +1,10 @@
+instructions: NEWLINE* (expression NEWLINE+)*
+expression: call_or_assign | comp_expr | do_expr
+call_or_assign: IDENTIFIER (func_call | var_assign)
+func_call: LPAREN (comp_expr (COMMA comp_expr)*)? RPAREN
+var_assign: EQ comp_expr
+do_expr: KEYWORD("do") (math_expr1 KEYWORD("times") | KEYWORD("while") comp_expr) comp_expr LCURLY instructions RCURLY
+comp_expr: math_expr1 ((LSR|LSE|GRT|GRE|NEQ) math_expr1)* | KEYWORD("not") comp_expr
+math_expr1: math_expr2 ((ADD | SUB) math_expr2)*
+math_expr2: factor ((MUL | DIV) factor)*
+factor: NUM | IDENTIFIER (func_call)? | LPAREN comp_expr RPAREN

@@ -1,0 +1,140 @@
+[gd_scene load_steps=18 format=3 uid="uid://qeh62dx7i87e"]
+
+[ext_resource type="Script" path="res://Scripts/Player.gd" id="1_43w8h"]
+[ext_resource type="Texture2D" uid="uid://ctsxvg35ruxi8" path="res://Sprites/Player.png" id="2_kjiv4"]
+[ext_resource type="PackedScene" uid="uid://b1wfbryodrhr8" path="res://Scenes/Weapon.tscn" id="3_kn4j0"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wdqnm"]
+radius = 7.27
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8pbib"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1by0d"]
+animation = &"Walk"
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_txbgw"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_i2oy3"]
+graph_offset = Vector2(-328, 36)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_1by0d")
+nodes/Animation/position = Vector2(-120, 120)
+nodes/WalkSpeed/node = SubResource("AnimationNodeTimeScale_txbgw")
+nodes/WalkSpeed/position = Vector2(60, 120)
+nodes/output/position = Vector2(300, 160)
+node_connections = [&"output", 0, &"WalkSpeed", &"WalkSpeed", 0, &"Animation"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ddxrq"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_44u8w"]
+advance_mode = 2
+advance_condition = &"walking"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1onrj"]
+advance_mode = 2
+advance_condition = &"idling"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_g53h0"]
+states/Idle/node = SubResource("AnimationNodeAnimation_8pbib")
+states/Idle/position = Vector2(323, 100)
+states/Start/position = Vector2(199, 100)
+states/Walk/node = SubResource("AnimationNodeBlendTree_i2oy3")
+states/Walk/position = Vector2(565, 78)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_ddxrq"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_44u8w"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_1onrj")]
+graph_offset = Vector2(-55, 26)
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_liqbl"]
+
+[sub_resource type="Animation" id="Animation_e17dp"]
+resource_name = "Idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="Animation" id="Animation_lf2w5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_uxqxb"]
+resource_name = "Walk"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [3, 0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_061p1"]
+_data = {
+"Idle": SubResource("Animation_e17dp"),
+"RESET": SubResource("Animation_lf2w5"),
+"Walk": SubResource("Animation_uxqxb")
+}
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 32
+collision_mask = 48
+motion_mode = 1
+script = ExtResource("1_43w8h")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_kjiv4")
+hframes = 2
+vframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_wdqnm")
+
+[node name="WeaponPivot" type="Node2D" parent="."]
+position = Vector2(0, 1)
+
+[node name="WeaponGrip" type="Node2D" parent="WeaponPivot"]
+unique_name_in_owner = true
+position = Vector2(-21, -11)
+
+[node name="Sword" parent="WeaponPivot/WeaponGrip" instance=ExtResource("3_kn4j0")]
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_g53h0")
+anim_player = NodePath("AnimationPlayer")
+active = true
+parameters/playback = SubResource("AnimationNodeStateMachinePlayback_liqbl")
+parameters/conditions/idling = false
+parameters/conditions/walking = false
+parameters/Walk/WalkSpeed/scale = 1.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimationTree"]
+libraries = {
+"": SubResource("AnimationLibrary_061p1")
+}
